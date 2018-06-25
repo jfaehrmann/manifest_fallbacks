@@ -114,7 +114,7 @@ let appInstallPromptIOS = (() => {
       mc.append(cb, ico, title, txt, cta);
       
       ol.append(mc);
-      $('body').append(ol);
+      $('body').append(ol).hide().fadeIn(1500);
       ol.foundation().foundation('open');
     }
 
