@@ -3,8 +3,7 @@ let appInstallPromptIOS = (() => {
     'use strict';
 
     // set variables
-    const COOKIE = 'iOSInstallPrompt=Cookie_set';
-
+    const COOKIE = 'iOSInstallPrompt=cookie_set';
     const COOKIE_MAX_AGE = ';max-age=604800' // one week
 
     // config
@@ -16,7 +15,7 @@ let appInstallPromptIOS = (() => {
       },
 
       inhalt: {
-        titel: 'Thalia Web App',
+        titel: 'Jonas Fährmann',
         text: 'Installiere dir die Anwendung auf deinem Homescreen, um schnell und einfach auf Inhalte zuzugreifen.',
         cta1: 'Klicke einfach ',
         cta2: ' und "Zum Homescreen"'
@@ -114,7 +113,7 @@ let appInstallPromptIOS = (() => {
       mc.append(cb, ico, title, txt, cta);
       
       ol.append(mc);
-      $('body').append(ol).hide().fadeIn(1500);
+      $('body').append(ol)/*.hide().fadeIn()*/;
       ol.foundation().foundation('open');
     }
 
