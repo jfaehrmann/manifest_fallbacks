@@ -1,12 +1,13 @@
 let appInstallPromptIOS = (() => {
- 
+    
+    // Prototyp/Workaround App Install Prompt für iOS Endgeräte
     'use strict';
 
-    // set variables
+    let mandant = 2;
     const COOKIE = 'iOSInstallPrompt=cookie_set';
-    const COOKIE_MAX_AGE = ';max-age=604800' // one week
+    const COOKIE_MAX_AGE = 'max-age=604800' // eine Woche
 
-    // config
+    // Konfiguration des Overlays
     let config = {
 
       images: {
@@ -14,14 +15,14 @@ let appInstallPromptIOS = (() => {
         appIcon: 'img/icons/apple-touch-icon.png'
       },
 
-      inhalt: {
-        titel: 'Jonas Fährmann',
-        text: 'Installiere dir die Anwendung auf deinem Homescreen, um schnell und einfach auf Inhalte zuzugreifen.',
-        cta1: 'Klicke einfach ',
-        cta2: ' und "Zum Homescreen"'
+      content: {
+        title: 'Jonas Fährmann',
+        text: 'Installiere die Anwendung auf deinem Home-Bildschirm, um schnell und einfach auf Inhalte zuzugreifen.',
+        cta1: 'Klicke dafür ',
+        cta2: ' und "Zum Home-Bildschirm"'
       },
 
-      stil: {
+      style: {
         overlay: {
           'display': 'flex',
           'width': '300px',
@@ -44,7 +45,7 @@ let appInstallPromptIOS = (() => {
           'box-shadow': '1px 1px 10px 0px rgba(0,0,0,.3)',
           'border-radius': '10px'
         },
-        titel: {
+        title: {
           'margin': '0',
           'font-size': '1.25rem'
         },
@@ -72,39 +73,39 @@ let appInstallPromptIOS = (() => {
         overlay: '<div id="iOSInstallPrompt" class="reveal" data-reveal role="dialog"><div>',
         mainContainer: '<div></div>',
         icon: '<img>',
-        titel: '<h2></h2>',
+        title: '<h2></h2>',
         text: '<p></p>',
         callToAction: '<p></p>',
         action: '<img>',
-        closeButton: '<button id="close-button" class="close-button" data-close aria-label="schliessen" type="button"><span aria-hidden="true">&times;</span></button>',
+        closeButton: '<button id="close-ios-prompt" class="close-button" data-close aria-label="schliessen" type="button"><span aria-hidden="true">&times;</span></button>',
       }
     };
 
-    // get the userAgent and compare to iosDevices      
+    // Aktuellen Browser mit iOS Endgeräten vergleichen
     let isIos = () => {
       let userAgent = window.navigator.userAgent.toLowerCase();
       return /iphone|ipad|ipod/.test(userAgent);
     }
 
-    // check if device is in standalone mode
-    // let isInStandaloneMode = 'standalone' in window.navigator && window.navigator.standalone;
+    // Prüfen ob die Anwendung bereits auf dem Home-Bildschirm installiert ist
     let isInStandaloneMode = () => {
       return 'standalone' in window.navigator && window.navigator.standalone;
     };
 
-    // check if cookie exist
+    // Prüfen ob Cookie bereits gesetzt ist
     let isCookieSet = () => {
       return document.cookie.includes(COOKIE);
     };
 
-    // check if an app install prompt should be shown
-    if (!isCookieSet() && !isInStandaloneMode() && isIos()) {
-      let tmp = config.templates, cnt = config.inhalt, sty = config.stil, img = config.images;
+    // Prüfen ob die App Install Prompt angezeigt werden soll
+    if (mandant == 2 && !isCookieSet() && !isInStandaloneMode() && isIos()) {
+      // Reveal Modal mit Konfigurationen in die Seite schreiben
+      let tmp = config.templates, cnt = config.content, sty = config.style, img = config.images;
       let ol = $(tmp.overlay).css(sty.overlay);
       let mc = $(tmp.mainContainer).css(sty.mainContainer);
       let cb = $(tmp.closeButton).css(sty.closeButton);
       let ico = $(tmp.icon).attr('src', '' + img.appIcon).css(sty.appIcon);
-      let title = $(tmp.titel).html(cnt.titel).css(sty.titel);
+      let title = $(tmp.title).html(cnt.title).css(sty.title);
       let txt = $(tmp.text).html(cnt.text).css(sty.text);
       let act = $(tmp.action).attr('src', '' + img.action).css(sty.action);
       let cta = $(tmp.callToAction).html(cnt.cta1).css(sty.callToAction);
@@ -113,23 +114,18 @@ let appInstallPromptIOS = (() => {
       mc.append(cb, ico, title, txt, cta);
       
       ol.append(mc);
-      $('body').append(ol)/*.hide().fadeIn()*/;
+      $('body').append(ol);
       ol.foundation().foundation('open');
     }
 
-    // set cookie on reveal close
+    // Cookie beim schließen des Modals setzen
     let setCookie = () => {
-      document.cookie = COOKIE + COOKIE_MAX_AGE;
-      console.log('[iOSInstallPrompt] Cookie succesfully set')
+      document.cookie = COOKIE + ';' + COOKIE_MAX_AGE;
     };
 
-    if (!isCookieSet() && isIos()) {
-      let closeButton = document.getElementById('close-button');
+    if (mandant == 2 && !isCookieSet() && isIos()) {
+      let closeButton = document.getElementById('close-ios-prompt');
       closeButton.addEventListener('click', setCookie);
-      document.addEventListener('click', setCookie);
     }
 
 })();
-
-
-
